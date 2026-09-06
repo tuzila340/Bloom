@@ -408,6 +408,40 @@ main {
   margin-top: 32px;
 }
 
+.btn-outline {
+  border-radius: 20px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  color: var(--sage-bg);
+  background: var(--gray);
+}
+
+.btn-outline:hover {
+  transform: scale(1.05);
+  transition:
+    color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.btn-sage {
+  border-radius: 20px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  color: var(--sage-bg);
+  background: var(--sage-deep);
+}
+
+.btn-sage:hover {
+  transform: scale(1.05);
+  transition:
+    color 0.3s ease,
+    transform 0.3s ease;
+}
+
 /* About */
 .about-hero {
   background: var(--sage-bg);
