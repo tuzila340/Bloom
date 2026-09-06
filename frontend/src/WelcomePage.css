@@ -164,6 +164,40 @@ main {
   font-weight: 500;
 }
 
+.btn-outline {
+  border-radius: 20px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  color: var(--sage-bg);
+  background: var(--gray);
+}
+
+.btn-sage {
+  border-radius: 20px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  color: var(--sage-bg);
+  background: var(--sage-deep);
+}
+
+.btn-outline:hover {
+  transform: scale(1.05);
+  transition:
+    color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.btn-sage:hover {
+  transform: scale(1.05);
+  transition:
+    color 0.3s ease,
+    transform 0.3s ease;
+}
+
 .progress-track {
   height: 7px;
   margin-bottom: 6px;

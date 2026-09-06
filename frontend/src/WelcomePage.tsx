@@ -247,7 +247,9 @@ function WelcomePage() {
                   <li>1 savings goal</li>
                   <li>monthly summary</li>
                 </ul>
-                <button className="btn btn-outline">get started</button>
+                <a href="" className="btn-outline">
+                  get started
+                </a>
               </div>
 
               <div className="price-card featured">
@@ -263,7 +265,9 @@ function WelcomePage() {
                   <li>ai help & insights</li>
                   <li>bank account sync</li>
                 </ul>
-                <button className="btn btn-sage">start plus</button>
+                <a href="" className="btn-sage">
+                  start plus
+                </a>
               </div>
 
               <div className="price-card">
@@ -278,7 +282,9 @@ function WelcomePage() {
                   <li>shared & individual budgets</li>
                   <li>joint savings goals</li>
                 </ul>
-                <button className="btn btn-outline">start household</button>
+                <a href="" className="btn-outline">
+                  start household
+                </a>
               </div>
             </div>
 
