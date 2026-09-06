@@ -1,7 +1,9 @@
 import "./WelcomePage.css";
 import "./App.css";
+import { useState } from "react";
 
 function WelcomePage() {
+  const [selectedCard, setSelectedCard] = useState<number | null>(null);
   return (
     <>
       <body>
@@ -235,7 +237,10 @@ function WelcomePage() {
             </div>
 
             <div className="pricing-grid">
-              <div className="price-card">
+              <div
+                className={`price-card ${selectedCard === 0 ? "featured" : ""}`}
+                onClick={() => setSelectedCard(selectedCard === 0 ? null : 0)}
+              >
                 <h3>free</h3>
                 <p className="desc">for getting started</p>
                 <p className="price">
@@ -247,11 +252,19 @@ function WelcomePage() {
                   <li>1 savings goal</li>
                   <li>monthly summary</li>
                 </ul>
-                <button className="btn-outline">get started</button>
+                <a
+                  href=""
+                  className={`price-card ${selectedCard === 0 ? "btn-sage" : "btn-outline"}`}
+                  onClick={() => setSelectedCard(selectedCard === 0 ? null : 0)}
+                >
+                  start free
+                </a>
               </div>
 
-              <div className="price-card featured">
-                <span className="badge">most popular</span>
+              <div
+                className={`price-card ${selectedCard === 1 ? "featured" : ""}`}
+                onClick={() => setSelectedCard(selectedCard === 1 ? null : 1)}
+              >
                 <h3>plus</h3>
                 <p className="desc">for staying on top of it</p>
                 <p className="price">
@@ -263,10 +276,19 @@ function WelcomePage() {
                   <li>ai help & insights</li>
                   <li>bank account sync</li>
                 </ul>
-                <button className="btn-sage">start plus</button>
+                <a
+                  href=""
+                  className={`price-card ${selectedCard === 1 ? "btn-sage" : "btn-outline"}`}
+                  onClick={() => setSelectedCard(selectedCard === 1 ? null : 1)}
+                >
+                  start plus
+                </a>
               </div>
 
-              <div className="price-card">
+              <div
+                className={`price-card ${selectedCard === 2 ? "featured" : ""}`}
+                onClick={() => setSelectedCard(selectedCard === 2 ? null : 2)}
+              >
                 <h3>household</h3>
                 <p className="desc">for budgeting together</p>
                 <p className="price">
@@ -278,7 +300,13 @@ function WelcomePage() {
                   <li>shared & individual budgets</li>
                   <li>joint savings goals</li>
                 </ul>
-                <button className="btn-outline">start household</button>
+                <a
+                  href=""
+                  className={`price-card ${selectedCard === 2 ? "btn-sage" : "btn-outline"}`}
+                  onClick={() => setSelectedCard(selectedCard === 2 ? null : 2)}
+                >
+                  start household
+                </a>
               </div>
             </div>
 
