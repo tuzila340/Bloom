@@ -1,6 +1,7 @@
 import "./WelcomePage.css";
 import "./App.css";
 import { useState } from "react";
+import { Link } from "react-router";
 
 function WelcomePage() {
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
@@ -8,10 +9,10 @@ function WelcomePage() {
     <>
       <body>
         <header>
-          <a href="" className="brand" aria-label="Bloom home">
+          <Link to="/" className="brand" aria-label="Bloom home">
             <img src="/favicon.svg" alt="" className="logo" />
             <h4>bloom</h4>
-          </a>
+          </Link>
           <nav>
             <a href="#features" className="page-button">
               features
@@ -23,9 +24,9 @@ function WelcomePage() {
               about
             </a>
           </nav>
-          <a href="" className="get-started-button">
+          <Link to="/register" className="get-started-button">
             get started
-          </a>
+          </Link>
         </header>
         <main>
           <div className="main-content">
@@ -39,9 +40,9 @@ function WelcomePage() {
               one small habit at a time.
             </p>
             <div className="main-actions">
-              <a href="" className="start-button">
+              <Link to="/register" className="start-button">
                 start for free
-              </a>
+              </Link>
               <a href="" className="page-button">
                 watch demo
               </a>
