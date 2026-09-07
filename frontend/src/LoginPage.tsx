@@ -1,7 +1,7 @@
 import "./Registration-LoginPage.css";
 import { Link } from "react-router";
 
-function RegistrationPage() {
+function LoginPage() {
   return (
     <div className="page">
       <div className="form-panel">
@@ -13,15 +13,10 @@ function RegistrationPage() {
         </div>
 
         <div className="form-wrap">
-          <h1>create your account</h1>
-          <p className="sub">it takes about a minute to get started.</p>
+          <h1>log in to your account</h1>
+          <p className="sub">it takes about a minute</p>
 
           <form onSubmit={(e) => e.preventDefault()}>
-            <div className="field">
-              <label htmlFor="name">full name</label>
-              <input type="text" id="name" placeholder="alex morgan" />
-            </div>
-
             <div className="field">
               <label htmlFor="email">email</label>
               <input type="email" id="email" placeholder="alex@email.com" />
@@ -34,13 +29,10 @@ function RegistrationPage() {
                 id="password"
                 placeholder="at least 8 characters"
               />
-              <p className="hint">
-                use 8+ characters with a mix of letters and numbers.
-              </p>
             </div>
 
             <button type="submit" className="btn-primary">
-              create account
+              log in
             </button>
           </form>
 
@@ -69,12 +61,7 @@ function RegistrationPage() {
           </button>
 
           <p className="switch-line">
-            already have an account? <Link to="/login">log in</Link>
-          </p>
-
-          <p className="terms">
-            by creating an account, you agree to bloom's{" "}
-            <a href="#">terms of service</a> and <a href="#">privacy policy</a>.
+            don't have an account? <Link to="/register">create one</Link>
           </p>
         </div>
       </div>
@@ -115,4 +102,4 @@ function RegistrationPage() {
   );
 }
 
-export default RegistrationPage;
+export default LoginPage;
