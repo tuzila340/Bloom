@@ -10,7 +10,7 @@ function WelcomePage() {
       <body>
         <header>
           <Link to="/" className="brand" aria-label="Bloom home">
-            <img src="/favicon.svg" alt="" className="logo" />
+            <img src="/favicon.svg" alt="" className="logo-mark" />
             <h4>bloom</h4>
           </Link>
           <nav>

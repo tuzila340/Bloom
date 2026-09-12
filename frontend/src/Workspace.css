@@ -39,6 +39,18 @@ h3 {
   gap: 8px;
   padding: 0 8px 24px;
 }
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px 24px;
+  color: var(--charcoal);
+  text-decoration: none;
+}
+.logo-mark {
+  width: 40px;
+  height: 40px;
+}
 .logo span {
   font-family: "Nunito", sans-serif;
   font-weight: 600;
@@ -85,7 +97,7 @@ h3 {
   margin-left: 200px;
   flex: 1;
   padding: 32px 40px;
-  max-width: 900px;
+  min-width: 320px;
 }
 
 .page-block {

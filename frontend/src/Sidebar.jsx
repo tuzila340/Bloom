@@ -1,18 +1,20 @@
 import "./Workspace.css";
-import { NavLink } from "react-router";
+import { Link, NavLink } from "react-router";
 
 const navItems = [
-  { label: "planningPage", href: "/planningPage", icon: "◎" },
-  { label: "statisticsPage", href: "/statisticsPage", icon: "◔" },
   { label: "userDataPage", href: "/userDataPage", icon: "☰" },
-  { label: "settingsPage", href: "/settingsPage", icon: "⚙" },
+  { label: "statisticsPage", href: "/statisticsPage", icon: "◔" },
+  { label: "planningPage", href: "/planningPage", icon: "◎" },
   { label: "aiHelpPage", href: "/aiHelpPage", icon: "✦" },
 ];
 
 function Sidebar() {
   return (
-    <>
-      <div className="sidebar">
+    <div className="sidebar">
+      <Link to="/" className="brand" aria-label="Bloom home">
+        <img src="/favicon.svg" alt="" className="logo-mark" />
+        <h4>bloom</h4>
+      </Link>
         <div className="nav-main">
           {navItems.map((item) => (
             <NavLink
@@ -36,8 +38,7 @@ function Sidebar() {
             <span className="dot">⚙</span>settings
           </NavLink>
         </div>
-      </div>
-    </>
+    </div>
   );
 }
 
