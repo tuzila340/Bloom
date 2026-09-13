@@ -4,8 +4,8 @@ services:
     container_name: bloom-postgres
     environment:
       POSTGRES_DB: bloom
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: your_password
+      POSTGRES_USER: tuzila340
+      POSTGRES_PASSWORD: Tuzila340@00
     ports:
       - "5432:5432"
     volumes:
