@@ -75,6 +75,18 @@ app.MapPost("/login", async (
     return Results.Unauthorized();
 });
 
+app.Map("/user-profil-data", async (HttpContext http, [FromServices] UserManager<User> userManager) =>
+{
+    var user = await userManager.GetUserAsync(http.User);
+    if (user == null) return Results.Unauthorized();
+    
+    return Results.Ok(new { 
+        id = user.Id, 
+        email = user.Email, 
+        username = user.UserName 
+    });
+}).RequireAuthorization();
+
 
 
 app.Run();

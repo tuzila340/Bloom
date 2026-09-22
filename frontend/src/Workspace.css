@@ -307,6 +307,10 @@ h3 {
 }
 
 /* AI Help */
+.ai-help-page {
+  padding-bottom: 80px;
+}
+
 .chat-window {
   display: flex;
   flex-direction: column;
@@ -335,6 +339,14 @@ h3 {
 .chat-input-row {
   display: flex;
   gap: 10px;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 200px;
+  z-index: 10;
+  padding: 12px 40px 20px;
+  margin: 0;
+  background: var(--cream);
 }
 .chat-input-row input {
   flex: 1;
@@ -435,6 +447,10 @@ h3 {
   .main {
     margin-left: 0;
     padding: 24px;
+  }
+  .chat-input-row {
+    left: 0;
+    padding: 12px 24px 20px;
   }
   .two-col {
     grid-template-columns: 1fr;

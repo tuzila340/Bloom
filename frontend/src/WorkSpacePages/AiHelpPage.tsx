@@ -7,7 +7,7 @@ function AiHelpPage() {
       <Sidebar />
       <div className="main">
         {/* <!-- AI HELP --> */}
-        <div className="page-block visible" id="page-aihelp">
+        <div className="page-block visible ai-help-page" id="page-aihelp">
           <div className="page-head">
             <h1>ai help</h1>
           </div>
