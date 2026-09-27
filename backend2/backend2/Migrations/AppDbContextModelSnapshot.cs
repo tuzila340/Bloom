@@ -179,6 +179,9 @@ namespace backend2.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<float>("AllExpenses")
+                        .HasColumnType("real");
+
                     b.Property<float>("Amount")
                         .HasColumnType("real");
 
@@ -187,6 +190,15 @@ namespace backend2.Migrations
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<float>("Expenses")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Income")
+                        .HasColumnType("real");
+
+                    b.Property<float>("LeftToSpend")
+                        .HasColumnType("real");
 
                     b.Property<string>("Title")
                         .IsRequired()

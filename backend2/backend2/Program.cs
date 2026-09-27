@@ -93,3 +93,18 @@ app.Run();
 
 public record RegisterDto(string username, string email, string password);
 public record LoginDto(string username, string password);
+
+public record DashboardResponse(
+    float ThisMonthSpent,
+    float LeftToSpend,
+    int EntriesCount,
+    IEnumerable<FinanceDto> Transactions
+);
+
+public record FinanceDto(
+    int Id,
+    string Title,
+    string CategoryName,
+    string Date,
+    float Amount
+);

@@ -13,6 +13,10 @@ public class Finance
 
     public DateTime Date { get; set; }
     public float Amount { get; set; }
+    public float Income { get; set; }
+    public float Expenses { get; set; }
+    public float AllExpenses { get; set; }
+    public float LeftToSpend { get; set; }
     
     public required string UserId { get; set; }
     public User User { get; set; } = null!;
