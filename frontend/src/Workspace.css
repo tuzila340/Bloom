@@ -178,7 +178,7 @@ h3 {
 }
 .table-row {
   display: grid;
-  grid-template-columns: 2fr 1.2fr 1fr 1fr;
+  grid-template-columns: 2fr 1.2fr 1fr 1fr auto;
   align-items: center;
   padding: 12px 16px;
   font-size: 13px;
@@ -212,6 +212,17 @@ h3 {
 .amount-neg {
   color: var(--charcoal);
   text-align: right;
+}
+.deletebtn {
+  border: 0;
+  padding: 4px 0 4px 12px;
+  background: transparent;
+  color: var(--coral, #c75b4b);
+  font: inherit;
+  cursor: pointer;
+}
+.deletebtn:hover {
+  text-decoration: underline;
 }
 
 /* Statistics */

@@ -10,10 +10,11 @@ import {
 import { useForm, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import axios from "axios";
 
 type AddEntryDialogProps = {
   onClose: () => void;
-  onSave?: (entry: AddEntryFormData) => void;
+  onSave?: () => void | Promise<void>;
 };
 
 const addEntrySchema = yup.object({
@@ -60,6 +61,7 @@ function AddEntryDialog({ onClose, onSave }: AddEntryDialogProps) {
   const {
     register,
     handleSubmit,
+    reset,
     setValue,
     control,
     formState: { errors },
@@ -75,9 +77,26 @@ function AddEntryDialog({ onClose, onSave }: AddEntryDialogProps) {
   const selectedType = useWatch({ control, name: "type" });
   const selectedCategory = useWatch({ control, name: "category" });
 
-  const onSubmit = (entry: AddEntryFormData) => {
-    onSave?.(entry);
-    onClose();
+  const onSubmit = async (data: AddEntryFormData) => {
+    try {
+      await axios.post(
+        "http://localhost:5277/addEntry",
+        {
+          description: data.description,
+          amount: data.amount,
+          date: data.date,
+          type: data.type === "expense" ? 0 : 1,
+          repeat: { never: 0, weekly: 1, monthly: 2 }[data.repeat],
+          categoryId: data.type === "expense" ? data.category : null,
+        },
+        { withCredentials: true },
+      );
+      reset();
+      await onSave?.();
+      onClose();
+    } catch (err) {
+      console.error("Error sending message:", err.message);
+    }
   };
 
   return (
@@ -171,10 +190,10 @@ function AddEntryDialog({ onClose, onSave }: AddEntryDialogProps) {
                 <div className="category-grid">
                   <button
                     type="button"
-                    className={`category-chip ${selectedCategory === 0 ? "selected" : ""}`}
-                    aria-pressed={selectedCategory === 0}
+                    className={`category-chip ${selectedCategory === 1 ? "selected" : ""}`}
+                    aria-pressed={selectedCategory === 1}
                     onClick={() =>
-                      setValue("category", 0, { shouldValidate: true })
+                      setValue("category", 1, { shouldValidate: true })
                     }
                   >
                     <div
@@ -190,10 +209,10 @@ function AddEntryDialog({ onClose, onSave }: AddEntryDialogProps) {
                   </button>
                   <button
                     type="button"
-                    className={`category-chip ${selectedCategory === 1 ? "selected" : ""}`}
-                    aria-pressed={selectedCategory === 1}
+                    className={`category-chip ${selectedCategory === 2 ? "selected" : ""}`}
+                    aria-pressed={selectedCategory === 2}
                     onClick={() =>
-                      setValue("category", 1, { shouldValidate: true })
+                      setValue("category", 2, { shouldValidate: true })
                     }
                   >
                     <div
@@ -209,10 +228,10 @@ function AddEntryDialog({ onClose, onSave }: AddEntryDialogProps) {
                   </button>
                   <button
                     type="button"
-                    className={`category-chip ${selectedCategory === 2 ? "selected" : ""}`}
-                    aria-pressed={selectedCategory === 2}
+                    className={`category-chip ${selectedCategory === 3 ? "selected" : ""}`}
+                    aria-pressed={selectedCategory === 3}
                     onClick={() =>
-                      setValue("category", 2, { shouldValidate: true })
+                      setValue("category", 3, { shouldValidate: true })
                     }
                   >
                     <div
@@ -228,10 +247,10 @@ function AddEntryDialog({ onClose, onSave }: AddEntryDialogProps) {
                   </button>
                   <button
                     type="button"
-                    className={`category-chip ${selectedCategory === 3 ? "selected" : ""}`}
-                    aria-pressed={selectedCategory === 3}
+                    className={`category-chip ${selectedCategory === 4 ? "selected" : ""}`}
+                    aria-pressed={selectedCategory === 4}
                     onClick={() =>
-                      setValue("category", 3, { shouldValidate: true })
+                      setValue("category", 4, { shouldValidate: true })
                     }
                   >
                     <div
@@ -247,10 +266,10 @@ function AddEntryDialog({ onClose, onSave }: AddEntryDialogProps) {
                   </button>
                   <button
                     type="button"
-                    className={`category-chip ${selectedCategory === 4 ? "selected" : ""}`}
-                    aria-pressed={selectedCategory === 4}
+                    className={`category-chip ${selectedCategory === 5 ? "selected" : ""}`}
+                    aria-pressed={selectedCategory === 5}
                     onClick={() =>
-                      setValue("category", 4, { shouldValidate: true })
+                      setValue("category", 5, { shouldValidate: true })
                     }
                   >
                     <div
@@ -266,10 +285,10 @@ function AddEntryDialog({ onClose, onSave }: AddEntryDialogProps) {
                   </button>
                   <button
                     type="button"
-                    className={`category-chip ${selectedCategory === 5 ? "selected" : ""}`}
-                    aria-pressed={selectedCategory === 5}
+                    className={`category-chip ${selectedCategory === 6 ? "selected" : ""}`}
+                    aria-pressed={selectedCategory === 6}
                     onClick={() =>
-                      setValue("category", 5, { shouldValidate: true })
+                      setValue("category", 6, { shouldValidate: true })
                     }
                   >
                     <div
@@ -285,10 +304,10 @@ function AddEntryDialog({ onClose, onSave }: AddEntryDialogProps) {
                   </button>
                   <button
                     type="button"
-                    className={`category-chip ${selectedCategory === 6 ? "selected" : ""}`}
-                    aria-pressed={selectedCategory === 6}
+                    className={`category-chip ${selectedCategory === 7 ? "selected" : ""}`}
+                    aria-pressed={selectedCategory === 7}
                     onClick={() =>
-                      setValue("category", 6, { shouldValidate: true })
+                      setValue("category", 7, { shouldValidate: true })
                     }
                   >
                     <div

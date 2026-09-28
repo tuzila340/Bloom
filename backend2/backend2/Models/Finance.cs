@@ -6,12 +6,12 @@ public class Finance
     public string Title { get; set; }
 
     // ID выбранной категории (сохраняется в базе)
-    public int CategoryId { get; set; }
+    public string CategoryId { get; set; }
     
     // Навигационное свойство, чтобы Entity Framework подтягивал объект категории
     public Category Category { get; set; } = null!;
 
-    public DateTime Date { get; set; }
+    public string Date { get; set; }
     public float Amount { get; set; }
     public float Income { get; set; }
     public float Expenses { get; set; }

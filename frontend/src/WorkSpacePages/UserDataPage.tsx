@@ -1,10 +1,52 @@
 import Sidebar from "../Sidebar";
 import "../Workspace.css";
 import AddEntryDialog from "../AddEntryDialog";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
+
+type UserData = {
+  id: number;
+  description: string;
+  amount: number;
+  categoryName: string | null;
+  date: string;
+  type: number;
+};
 
 function UserDataPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [data, setData] = useState<UserData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get<UserData[]>(
+        "http://localhost:5277/userFinance",
+        { withCredentials: true },
+      );
+      setData(response.data);
+    } catch (err) {
+      setData([]);
+      console.error("Error fetching user entries:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const deleteUserData = async (id: number) => {
+    try {
+      await axios.delete(`http://localhost:5277/deleteEntry/${id}`, {
+        withCredentials: true,
+      });
+      setData((currentData) => currentData.filter((entry) => entry.id !== id));
+    } catch (err) {
+      console.error("Error deleting user entry:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   return (
     <>
@@ -44,77 +86,61 @@ function UserDataPage() {
               <span>category</span>
               <span>date</span>
               <span style={{ textAlign: "right" }}>amount</span>
+              <span />
             </div>
-            <div className="table-row">
-              <span className="row-desc">
-                <span
-                  className="row-icon"
-                  style={{
-                    background: "var(--sage-bg)",
-                    color: "var(--sage-deep)",
-                  }}
-                >
-                  🛒
-                </span>
-                whole foods
-              </span>
-              <span style={{ color: "var(--gray)" }}>groceries</span>
-              <span style={{ color: "var(--gray)" }}>sep 2</span>
-              <span className="amount-neg">-$64.20</span>
-            </div>
-            <div className="table-row">
-              <span className="row-desc">
-                <span
-                  className="row-icon"
-                  style={{
-                    background: "var(--amber-bg)",
-                    color: "var(--amber)",
-                  }}
-                >
-                  ☕
-                </span>
-                blue bottle coffee
-              </span>
-              <span style={{ color: "var(--gray)" }}>dining out</span>
-              <span style={{ color: "var(--gray)" }}>sep 2</span>
-              <span className="amount-neg">-$6.50</span>
-            </div>
-            <div className="table-row">
-              <span className="row-desc">
-                <span
-                  className="row-icon"
-                  style={{ background: "var(--blue-bg)", color: "var(--blue)" }}
-                >
-                  🚗
-                </span>
-                uber ride
-              </span>
-              <span style={{ color: "var(--gray)" }}>transport</span>
-              <span style={{ color: "var(--gray)" }}>sep 1</span>
-              <span className="amount-neg">-$14.80</span>
-            </div>
-            <div className="table-row">
-              <span className="row-desc">
-                <span
-                  className="row-icon"
-                  style={{
-                    background: "var(--purple-bg)",
-                    color: "var(--purple)",
-                  }}
-                >
-                  💼
-                </span>
-                freelance payment
-              </span>
-              <span style={{ color: "var(--gray)" }}>income</span>
-              <span style={{ color: "var(--gray)" }}>sep 1</span>
-              <span className="amount-pos">+$450.00</span>
-            </div>
+            {isLoading ? (
+              <div className="table-row">loading...</div>
+            ) : data.length === 0 ? (
+              <div className="table-row">no entries yet</div>
+            ) : (
+              data.map((entry) => {
+                const isIncome = entry.type === 1;
+
+                return (
+                  <div className="table-row" key={entry.id}>
+                    <span className="row-desc">
+                      <span
+                        className="row-icon"
+                        style={{
+                          background: isIncome
+                            ? "var(--sage-bg)"
+                            : "var(--amber-bg)",
+                          color: isIncome ? "var(--sage-deep)" : "var(--amber)",
+                        }}
+                      >
+                        {isIncome ? "+" : "-"}
+                      </span>
+                      {entry.description}
+                    </span>
+                    <span style={{ color: "var(--gray)" }}>
+                      {entry.categoryName ?? (isIncome ? "income" : "expense")}
+                    </span>
+                    <span style={{ color: "var(--gray)" }}>
+                      {new Date(`${entry.date}T00:00:00`).toLocaleDateString()}
+                    </span>
+                    <span className={isIncome ? "amount-pos" : "amount-neg"}>
+                      {isIncome ? "+" : "-"}${Math.abs(entry.amount).toFixed(2)}
+                    </span>
+                    <button
+                      type="button"
+                      className="deletebtn"
+                      onClick={() => void deleteUserData(entry.id)}
+                      aria-label={`Delete ${entry.description}`}
+                    >
+                      delete
+                    </button>
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
       </div>
       {isDialogOpen && (
-        <AddEntryDialog onClose={() => setIsDialogOpen(false)} />
+        <AddEntryDialog
+          onClose={() => setIsDialogOpen(false)}
+          onSave={fetchUserData}
+        />
       )}
     </>
   );

@@ -32,5 +32,14 @@ public class AppDbContext : IdentityDbContext<User>
                 .HasForeignKey(e => e.UserId)
                 .IsRequired();
         });
+        builder.Entity<Category>().HasData(
+            new Category { Id = 1, Name = "groceries" },
+            new Category { Id = 2, Name = "dining" },
+            new Category { Id = 3, Name = "transport" },
+            new Category { Id = 4, Name = "fun" },
+            new Category { Id = 5, Name = "home" },
+            new Category { Id = 6, Name = "health" },
+            new Category { Id = 7, Name = "other" }
+        );
     }
 }
