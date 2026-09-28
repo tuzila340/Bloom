@@ -130,6 +130,12 @@ h3 {
   background: var(--coral);
   color: var(--coral-bg);
 }
+
+.btn-coral:hover {
+  background-color: var(--sage-deep);
+  transition: background-color 0.3s ease;
+}
+
 .btn-sage {
   background: var(--sage-deep);
   color: var(--sage-bg);

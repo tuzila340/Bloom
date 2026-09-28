@@ -1,10 +1,7 @@
 import Sidebar from "../Sidebar";
 import "../Workspace.css";
-import AddEntryDialog from "../AddEntryDialog";
-import { useState } from "react";
 
 function PlanningPage() {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   return (
     <>
       <Sidebar />
@@ -13,13 +10,7 @@ function PlanningPage() {
         <div className="page-block visible" id="page-planning">
           <div className="page-head">
             <h1>planning</h1>
-            <button
-              type="button"
-              className="btn btn-coral"
-              onClick={() => setIsDialogOpen(true)}
-            >
-              + new goal
-            </button>
+            <button className="btn btn-coral">+ new goal</button>
           </div>
 
           <div className="card goal-card">
@@ -60,9 +51,6 @@ function PlanningPage() {
           </div>
         </div>
       </div>
-      {isDialogOpen && (
-        <AddEntryDialog onClose={() => setIsDialogOpen(false)} />
-      )}
     </>
   );
 }

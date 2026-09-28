@@ -1,7 +1,11 @@
 import Sidebar from "../Sidebar";
 import "../Workspace.css";
+import AddEntryDialog from "../AddEntryDialog";
+import { useState } from "react";
 
 function UserDataPage() {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   return (
     <>
       <Sidebar />
@@ -10,7 +14,13 @@ function UserDataPage() {
         <div className="page-block visible" id="page-mydata">
           <div className="page-head">
             <h1>my data</h1>
-            <button className="btn btn-coral">+ add entry</button>
+            <button
+              type="button"
+              className="btn btn-coral"
+              onClick={() => setIsDialogOpen(true)}
+            >
+              + add entry
+            </button>
           </div>
 
           <div className="stat-grid">
@@ -103,6 +113,9 @@ function UserDataPage() {
           </div>
         </div>
       </div>
+      {isDialogOpen && (
+        <AddEntryDialog onClose={() => setIsDialogOpen(false)} />
+      )}
     </>
   );
 }
