@@ -130,6 +130,12 @@ h3 {
   background: var(--coral);
   color: var(--coral-bg);
 }
+
+.btn-coral:hover {
+  background-color: var(--sage-deep);
+  transition: background-color 0.3s ease;
+}
+
 .btn-sage {
   background: var(--sage-deep);
   color: var(--sage-bg);
@@ -172,7 +178,7 @@ h3 {
 }
 .table-row {
   display: grid;
-  grid-template-columns: 2fr 1.2fr 1fr 1fr;
+  grid-template-columns: 2fr 1.2fr 1fr 1fr auto;
   align-items: center;
   padding: 12px 16px;
   font-size: 13px;
@@ -206,6 +212,17 @@ h3 {
 .amount-neg {
   color: var(--charcoal);
   text-align: right;
+}
+.deletebtn {
+  border: 0;
+  padding: 4px 0 4px 12px;
+  background: transparent;
+  color: var(--coral, #c75b4b);
+  font: inherit;
+  cursor: pointer;
+}
+.deletebtn:hover {
+  text-decoration: underline;
 }
 
 /* Statistics */
@@ -307,6 +324,10 @@ h3 {
 }
 
 /* AI Help */
+.ai-help-page {
+  padding-bottom: 80px;
+}
+
 .chat-window {
   display: flex;
   flex-direction: column;
@@ -335,6 +356,14 @@ h3 {
 .chat-input-row {
   display: flex;
   gap: 10px;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 200px;
+  z-index: 10;
+  padding: 12px 40px 20px;
+  margin: 0;
+  background: var(--cream);
 }
 .chat-input-row input {
   flex: 1;
@@ -435,6 +464,10 @@ h3 {
   .main {
     margin-left: 0;
     padding: 24px;
+  }
+  .chat-input-row {
+    left: 0;
+    padding: 12px 24px 20px;
   }
   .two-col {
     grid-template-columns: 1fr;

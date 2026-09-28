@@ -1,7 +1,38 @@
 import Sidebar from "../Sidebar";
 import "../Workspace.css";
+import axios from "axios";
+import { useEffect, useState } from "react";
+
+type Profile = {
+  username: string;
+  email: string;
+};
 
 function SettingsPage() {
+  const [profile, setProfile] = useState<Profile | null>(null);
+
+  const fetchProfile = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5277/user-profil-data",
+        {
+          withCredentials: true,
+        },
+      );
+      setProfile(response.data);
+    } catch (err) {
+      if (err.response?.status === 401) {
+        setProfile(null);
+      } else {
+        console.error("Error fetching profile:", err.message);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
   return (
     <>
       <Sidebar />
@@ -15,7 +46,9 @@ function SettingsPage() {
           <div className="avatar-row">
             <div className="avatar"></div>
             <div>
-              <p style={{ fontWeight: 600, margin: 0 }}>alex morgan</p>
+              <p style={{ fontWeight: 600, margin: 0 }}>
+                {profile?.username ?? "Loading..."}
+              </p>
               <p
                 style={{
                   fontSize: 13,
@@ -23,7 +56,7 @@ function SettingsPage() {
                   margin: "2px 0 0",
                 }}
               >
-                alex@email.com
+                {profile?.email ?? "Loading..."}
               </p>
             </div>
             <button className="btn btn-outline" style={{ marginLeft: "auto" }}>
