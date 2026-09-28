@@ -6,4 +6,5 @@ public class Category
     public string Name { get; set; } = string.Empty; // Название, например: "Еда", "Транспорт"
     
     public List<Finance> Finances { get; set; } = new();
+    public List<Entry> Entries { get; set; } = new();
 }
