@@ -1,7 +1,60 @@
 import "./Registration-LoginPage.css";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
-function LoginPage() {
+type LoginPageProps = {
+  onLogin?: () => void;
+};
+
+const loginSchema = yup.object().shape({
+  username: yup.string().required("Username is required"),
+  password: yup
+    .string()
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is required"),
+});
+
+type LoginFormData = yup.InferType<typeof loginSchema>;
+
+function LoginPage({ onLogin }: LoginPageProps) {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: yupResolver(loginSchema),
+  });
+
+  const navigate = useNavigate();
+
+  const onSubmit = async (data: LoginFormData) => {
+    try {
+      await axios.post(
+        "http://localhost:5277/login",
+        {
+          username: data.username,
+          password: data.password,
+        },
+        { withCredentials: true },
+      );
+      console.log("Logged in!");
+
+      reset();
+      if (onLogin) onLogin();
+      navigate("/userDataPage");
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        console.error("Error details:", JSON.stringify(err.response?.data));
+      } else {
+        console.error("Registration error:", err);
+      }
+    }
+  };
+
   return (
     <div className="page">
       <div className="form-panel">
@@ -16,10 +69,15 @@ function LoginPage() {
           <h1>log in to your account</h1>
           <p className="sub">it takes about a minute</p>
 
-          <form onSubmit={(e) => e.preventDefault()}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="field">
-              <label htmlFor="email">email</label>
-              <input type="email" id="email" placeholder="alex@email.com" />
+              <label htmlFor="name">full name</label>
+              <input
+                type="text"
+                id="name"
+                placeholder="alex morgan"
+                {...register("username")}
+              />
             </div>
 
             <div className="field">
@@ -28,6 +86,7 @@ function LoginPage() {
                 type="password"
                 id="password"
                 placeholder="at least 8 characters"
+                {...register("password")}
               />
             </div>
 

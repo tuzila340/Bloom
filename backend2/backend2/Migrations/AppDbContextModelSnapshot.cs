@@ -154,6 +154,102 @@ namespace backend2.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("backend.Models.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Category");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "groceries"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "dining"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "transport"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "fun"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "home"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "health"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "other"
+                        });
+                });
+
+            modelBuilder.Entity("backend.Models.Entry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<int>("Repeat")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Entries");
+                });
+
             modelBuilder.Entity("backend.Models.Finance", b =>
                 {
                     b.Property<int>("Id")
@@ -162,14 +258,43 @@ namespace backend2.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<float>("AllExpenses")
+                        .HasColumnType("real");
+
                     b.Property<float>("Amount")
                         .HasColumnType("real");
+
+                    b.Property<string>("CategoryId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("CategoryId1")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Date")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<float>("Expenses")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Income")
+                        .HasColumnType("real");
+
+                    b.Property<float>("LeftToSpend")
+                        .HasColumnType("real");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId1");
 
                     b.HasIndex("UserId");
 
@@ -291,15 +416,47 @@ namespace backend2.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("backend.Models.Finance", b =>
+            modelBuilder.Entity("backend.Models.Entry", b =>
                 {
+                    b.HasOne("backend.Models.Category", "Category")
+                        .WithMany("Entries")
+                        .HasForeignKey("CategoryId");
+
                     b.HasOne("backend.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Category");
+
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("backend.Models.Finance", b =>
+                {
+                    b.HasOne("backend.Models.Category", "Category")
+                        .WithMany("Finances")
+                        .HasForeignKey("CategoryId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("backend.Models.Category", b =>
+                {
+                    b.Navigation("Entries");
+
+                    b.Navigation("Finances");
                 });
 #pragma warning restore 612, 618
         }

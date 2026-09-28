@@ -1,7 +1,64 @@
 import "./Registration-LoginPage.css";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
-function RegistrationPage() {
+const registrationSchema = yup.object({
+  username: yup.string().required("Username is required"),
+  email: yup.string().email("Invalid email").required("Email is required"),
+  password: yup
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .required("Password is required"),
+});
+
+type RegistrationFormData = yup.InferType<typeof registrationSchema>;
+
+type RegistrationPageProps = {
+  onRegister?: () => void;
+};
+
+function RegistrationPage({ onRegister }: RegistrationPageProps) {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<RegistrationFormData>({
+    resolver: yupResolver(registrationSchema),
+  });
+
+  const navigate = useNavigate();
+
+  const onSubmit = async (data: RegistrationFormData) => {
+    try {
+      // Сначала регистрируем пользователя, затем создаём браузерную сессию с теми же данными.
+      await axios.post("http://localhost:5277/register", data);
+      console.log("Registered!");
+
+      await axios.post(
+        "http://localhost:5277/login",
+        {
+          username: data.username,
+          password: data.password,
+        },
+        { withCredentials: true },
+      );
+      console.log("Logged in!");
+
+      reset();
+      if (onRegister) onRegister();
+      navigate("/userDataPage");
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        console.error("Error details:", JSON.stringify(err.response?.data));
+      } else {
+        console.error("Registration error:", err);
+      }
+    }
+  };
   return (
     <div className="page">
       <div className="form-panel">
@@ -16,15 +73,41 @@ function RegistrationPage() {
           <h1>create your account</h1>
           <p className="sub">it takes about a minute to get started.</p>
 
-          <form onSubmit={(e) => e.preventDefault()}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="field">
               <label htmlFor="name">full name</label>
-              <input type="text" id="name" placeholder="alex morgan" />
+              <input
+                type="text"
+                id="name"
+                placeholder="alex morgan"
+                aria-invalid={errors.username ? "true" : "false"}
+                aria-describedby={
+                  errors.username ? "username-error" : undefined
+                }
+                {...register("username")}
+              />
+              {errors.username && (
+                <p className="field-error" id="username-error">
+                  {errors.username.message}
+                </p>
+              )}
             </div>
 
             <div className="field">
               <label htmlFor="email">email</label>
-              <input type="email" id="email" placeholder="alex@email.com" />
+              <input
+                type="email"
+                id="email"
+                placeholder="alex@email.com"
+                aria-invalid={errors.email ? "true" : "false"}
+                aria-describedby={errors.email ? "email-error" : undefined}
+                {...register("email")}
+              />
+              {errors.email && (
+                <p className="field-error" id="email-error">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
             <div className="field">
@@ -33,7 +116,17 @@ function RegistrationPage() {
                 type="password"
                 id="password"
                 placeholder="at least 8 characters"
+                aria-invalid={errors.password ? "true" : "false"}
+                aria-describedby={
+                  errors.password ? "password-error" : undefined
+                }
+                {...register("password")}
               />
+              {errors.password && (
+                <p className="field-error" id="password-error">
+                  {errors.password.message}
+                </p>
+              )}
               <p className="hint">
                 use 8+ characters with a mix of letters and numbers.
               </p>
