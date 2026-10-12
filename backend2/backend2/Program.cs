@@ -165,6 +165,42 @@ app.MapDelete("/deleteEntry/{id:int}", async (
     return Results.NoContent();
 }).RequireAuthorization();
 
+app.MapGet("/dashboard-summary", async (
+    HttpContext http,
+    UserManager<User> userManager,
+    AppDbContext db) =>
+
+{
+    var user = await userManager.GetUserAsync(http.User);
+
+    if (user is null)
+        return Results.Unauthorized();
+
+    var today = DateOnly.FromDateTime(DateTime.UtcNow);
+    var monthStart = new DateOnly(today.Year, today.Month, 1);
+    var nextMonth = monthStart.AddMonths(1);
+
+    var monthlyEntries = db.Entries.Where(e =>
+        e.UserId == user.Id &&
+        e.Date >= monthStart &&
+        e.Date < nextMonth);
+
+    var spent = await monthlyEntries
+        .Where(e => e.Type == EntryType.Expense)
+        .SumAsync(e => (decimal?)e.Amount) ?? 0m;
+
+    var count = await monthlyEntries.CountAsync();
+
+    const decimal monthlyBudget = 2500m; // replace with a stored user budget
+
+    return Results.Ok(new
+    {
+        spentThisMonth = spent,
+        leftToSpend = monthlyBudget - spent,
+        entriesThisMonth = count
+    });
+}).RequireAuthorization();
+
 
 app.Run();
 

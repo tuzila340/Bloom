@@ -13,10 +13,17 @@ type UserData = {
   type: number;
 };
 
+type DashboardSummary = {
+  spentThisMonth: number;
+  leftToSpend: number;
+  entriesThisMonth: number;
+};
+
 function UserDataPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [data, setData] = useState<UserData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [summary, setSummary] = useState<DashboardSummary | null>(null);
 
   const fetchUserData = async () => {
     try {
@@ -45,6 +52,15 @@ function UserDataPage() {
   };
 
   useEffect(() => {
+    axios
+      .get<DashboardSummary>("http://localhost:5277/dashboard-summary", {
+        withCredentials: true,
+      })
+      .then((response) => setSummary(response.data))
+      .catch(console.error);
+  }, []);
+
+  useEffect(() => {
     fetchUserData();
   }, []);
 
@@ -68,15 +84,19 @@ function UserDataPage() {
           <div className="stat-grid">
             <div className="card">
               <p className="label">this month spent</p>
-              <p className="value">$1,658</p>
+              <p className="value">
+                {summary ? `$${summary.spentThisMonth.toFixed(2)}` : "$0.00"}
+              </p>
             </div>
             <div className="card">
               <p className="label">left to spend</p>
-              <p className="value">$842</p>
+              <p className="value">
+                {summary ? `$${summary.leftToSpend.toFixed(2)}` : "$0.00"}
+              </p>
             </div>
             <div className="card">
               <p className="label">entries</p>
-              <p className="value">27</p>
+              <p className="value">{summary ? summary.entriesThisMonth : 0}</p>
             </div>
           </div>
 
