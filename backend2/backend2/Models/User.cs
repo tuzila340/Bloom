@@ -4,5 +4,5 @@ namespace backend.Models;
 
 public class User: IdentityUser
 {
-    
+    public decimal MonthlyBudget { get; set; }
 }

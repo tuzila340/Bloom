@@ -45,7 +45,8 @@ app.MapPost("/register", async (
     var user = new User
     {
         UserName = dto.username,
-        Email = dto.email
+        Email = dto.email,
+        MonthlyBudget = dto.monthlyBudget
     };
 
     var result = await userManager.CreateAsync(user, dto.password);
@@ -189,22 +190,26 @@ app.MapGet("/dashboard-summary", async (
         .Where(e => e.Type == EntryType.Expense)
         .SumAsync(e => (decimal?)e.Amount) ?? 0m;
 
+    var plus = await monthlyEntries
+        .Where(e => e.Type == EntryType.Income)
+        .SumAsync(e => (decimal?)e.Amount) ?? 0m;
+
     var count = await monthlyEntries.CountAsync();
 
-    const decimal monthlyBudget = 2500m; // replace with a stored user budget
+    decimal monthlyBudget = user.MonthlyBudget; // replace with a stored user budget
 
     return Results.Ok(new
     {
         spentThisMonth = spent,
-        leftToSpend = monthlyBudget - spent,
-        entriesThisMonth = count
+        leftToSpend = monthlyBudget + plus - spent,
+        entriesThisMonth = count,
     });
 }).RequireAuthorization();
 
 
 app.Run();
 
-public record RegisterDto(string username, string email, string password);
+public record RegisterDto(string username, string email, string password, decimal monthlyBudget);
 public record LoginDto(string username, string password);
 
 public record CreateEntryDto(

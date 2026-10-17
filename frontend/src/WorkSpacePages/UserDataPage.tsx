@@ -46,22 +46,30 @@ function UserDataPage() {
         withCredentials: true,
       });
       setData((currentData) => currentData.filter((entry) => entry.id !== id));
+      await fetchSummary();
     } catch (err) {
       console.error("Error deleting user entry:", err);
     }
   };
 
-  useEffect(() => {
-    axios
-      .get<DashboardSummary>("http://localhost:5277/dashboard-summary", {
-        withCredentials: true,
-      })
-      .then((response) => setSummary(response.data))
-      .catch(console.error);
-  }, []);
+  const fetchSummary = async () => {
+    try {
+      const response = await axios.get<DashboardSummary>(
+        "http://localhost:5277/dashboard-summary",
+        { withCredentials: true },
+      );
+      setSummary(response.data);
+    } catch (err) {
+      console.error("Error fetching dashboard summary:", err);
+    }
+  };
+
+  const refreshData = async () => {
+    await Promise.all([fetchUserData(), fetchSummary()]);
+  };
 
   useEffect(() => {
-    fetchUserData();
+    refreshData();
   }, []);
 
   return (
@@ -159,7 +167,7 @@ function UserDataPage() {
       {isDialogOpen && (
         <AddEntryDialog
           onClose={() => setIsDialogOpen(false)}
-          onSave={fetchUserData}
+          onSave={refreshData}
         />
       )}
     </>

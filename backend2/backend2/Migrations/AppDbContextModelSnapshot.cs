@@ -326,6 +326,9 @@ namespace backend2.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<decimal>("MonthlyBudget")
+                        .HasColumnType("numeric");
+
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");

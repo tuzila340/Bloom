@@ -12,6 +12,11 @@ const registrationSchema = yup.object({
     .string()
     .min(8, "Password must be at least 8 characters")
     .required("Password is required"),
+  monthlybudget: yup
+    .number()
+    .typeError("Monthly budget must be a number")
+    .positive("Monthly budget must be a positive number")
+    .required("Monthly budget is required"),
 });
 
 type RegistrationFormData = yup.InferType<typeof registrationSchema>;
@@ -130,6 +135,26 @@ function RegistrationPage({ onRegister }: RegistrationPageProps) {
               <p className="hint">
                 use 8+ characters with a mix of letters and numbers.
               </p>
+            </div>
+
+            <div className="field">
+              <label htmlFor="monthlybudget">monthly budget</label>
+              <input
+                type="number"
+                id="monthlybudget"
+                placeholder="enter your monthly budget"
+                aria-invalid={errors.monthlybudget ? "true" : "false"}
+                aria-describedby={
+                  errors.monthlybudget ? "monthlybudget-error" : undefined
+                }
+                {...register("monthlybudget")}
+              />
+              {errors.monthlybudget && (
+                <p className="field-error" id="monthlybudget-error">
+                  {errors.monthlybudget.message}
+                </p>
+              )}
+              <p className="hint">enter a valid monthly budget.</p>
             </div>
 
             <button type="submit" className="btn-primary">
