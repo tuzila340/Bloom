@@ -2,10 +2,10 @@ import "./Workspace.css";
 import { Link, NavLink } from "react-router";
 
 const navItems = [
-  { label: "userDataPage", href: "/userDataPage", icon: "☰" },
-  { label: "statisticsPage", href: "/statisticsPage", icon: "◔" },
-  { label: "planningPage", href: "/planningPage", icon: "◎" },
-  { label: "aiHelpPage", href: "/aiHelpPage", icon: "✦" },
+  { label: "Data", href: "/userDataPage", icon: "☰" },
+  { label: "Statistics", href: "/statisticsPage", icon: "◔" },
+  { label: "Planning", href: "/planningPage", icon: "◎" },
+  { label: "AI Help", href: "/aiHelpPage", icon: "✦" },
 ];
 
 function Sidebar() {
@@ -15,29 +15,27 @@ function Sidebar() {
         <img src="/favicon.svg" alt="" className="logo-mark" />
         <h4>bloom</h4>
       </Link>
-        <div className="nav-main">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.href}
-              to={item.href}
-              className={({ isActive }) =>
-                `nav-item ${isActive ? "active" : ""}`
-              }
-            >
-              <span className="dot">{item.icon}</span>
-              {item.label}
-            </NavLink>
-          ))}
-        </div>
-
-        <div className="nav-bottom">
+      <div className="nav-main">
+        {navItems.map((item) => (
           <NavLink
-            to="/settingsPage"
+            key={item.href}
+            to={item.href}
             className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
           >
-            <span className="dot">⚙</span>settings
+            <span className="dot">{item.icon}</span>
+            {item.label}
           </NavLink>
-        </div>
+        ))}
+      </div>
+
+      <div className="nav-bottom">
+        <NavLink
+          to="/settingsPage"
+          className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
+        >
+          <span className="dot">⚙</span>settings
+        </NavLink>
+      </div>
     </div>
   );
 }

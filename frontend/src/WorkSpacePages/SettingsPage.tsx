@@ -2,6 +2,7 @@ import Sidebar from "../Sidebar";
 import "../Workspace.css";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import DeleteDialog from "../DeleteDialog";
 
 type Profile = {
   username: string;
@@ -9,6 +10,7 @@ type Profile = {
 };
 
 function SettingsPage() {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [profile, setProfile] = useState<Profile | null>(null);
 
   const fetchProfile = async () => {
@@ -124,11 +126,17 @@ function SettingsPage() {
                 </p>
                 <p className="desc">this can't be undone</p>
               </div>
-              <button className="btn btn-outline">delete</button>
+              <button
+                className="btn btn-outline delete-btn"
+                onClick={() => setIsDialogOpen(true)}
+              >
+                delete
+              </button>
             </div>
           </div>
         </div>
       </div>
+      {isDialogOpen && <DeleteDialog onClose={() => setIsDialogOpen(false)} />}
     </>
   );
 }
