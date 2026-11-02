@@ -206,6 +206,27 @@ app.MapGet("/dashboard-summary", async (
     });
 }).RequireAuthorization();
 
+app.MapDelete("/deleteUser", async (
+    HttpContext http,
+    UserManager<User> userManager,
+    AppDbContext db) =>
+{
+    var user = await userManager.GetUserAsync(http.User);
+    if (user is null) return Results.Unauthorized();
+
+    var entries = await db.Entries
+        .Where(e => e.UserId == user.Id)
+        .ToListAsync();
+
+    db.Entries.RemoveRange(entries);
+
+    var result = await userManager.DeleteAsync(user);
+    if (!result.Succeeded)
+        return Results.BadRequest(result.Errors);
+
+    return Results.NoContent();
+}).RequireAuthorization();
+
 
 app.Run();
 
