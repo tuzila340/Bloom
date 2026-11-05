@@ -24,6 +24,10 @@ function UserDataPage() {
   const [data, setData] = useState<UserData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
+  const sortedData = [...data].sort((a, b) => {
+    const dateOrder = b.date.localeCompare(a.date);
+    return dateOrder !== 0 ? dateOrder : b.id - a.id;
+  });
 
   const fetchUserData = async () => {
     try {
@@ -121,7 +125,7 @@ function UserDataPage() {
             ) : data.length === 0 ? (
               <div className="table-row">no entries yet</div>
             ) : (
-              data.map((entry) => {
+              sortedData.map((entry) => {
                 const isIncome = entry.type === 1;
 
                 return (
@@ -144,7 +148,14 @@ function UserDataPage() {
                       {entry.categoryName ?? (isIncome ? "income" : "expense")}
                     </span>
                     <span style={{ color: "var(--gray)" }}>
-                      {new Date(`${entry.date}T00:00:00`).toLocaleDateString()}
+                      {new Date(`${entry.date}T00:00:00`).toLocaleDateString(
+                        "en-US",
+                        {
+                          day: "2-digit",
+                          month: "long",
+                          year: "2-digit",
+                        },
+                      )}
                     </span>
                     <span className={isIncome ? "amount-pos" : "amount-neg"}>
                       {isIncome ? "+" : "-"}${Math.abs(entry.amount).toFixed(2)}

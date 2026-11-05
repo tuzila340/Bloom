@@ -1,7 +1,57 @@
 import Sidebar from "../Sidebar";
 import "../Workspace.css";
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
+import { ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { ChartLegend, ChartLegendContent } from "@/components/ui/chart";
+import { useState, useEffect } from "react";
+import axios from "axios";
+
+const chartConfig = {
+  expenses: {
+    label: "Expenses",
+    color: "#97c459",
+  },
+  incomes: {
+    label: "Incomes",
+    color: "#c0dd97",
+  },
+} satisfies ChartConfig;
+
+type ChartData = {
+  month: string;
+  expenses: number;
+  incomes: number;
+};
+
+function formatMonth(month: string) {
+  // The API returns YYYY-MM; use a fixed day to avoid timezone shifts.
+  const date = new Date(`${month}-01T00:00:00`);
+  return Number.isNaN(date.getTime())
+    ? month
+    : date.toLocaleDateString("en-US", { month: "long" });
+}
 
 function StatisticsPage() {
+  const [chartData, setChartData] = useState<ChartData[]>([]);
+
+  useEffect(() => {
+    const fetchChartData = async () => {
+      try {
+        const response = await axios.get<ChartData[]>(
+          "http://localhost:5277/chart",
+          { withCredentials: true },
+        );
+
+        setChartData(response.data);
+      } catch (error) {
+        console.error("Error fetching chart data:", error);
+        setChartData([]);
+      }
+    };
+
+    fetchChartData();
+  }, []);
   return (
     <>
       <Sidebar />
@@ -21,33 +71,33 @@ function StatisticsPage() {
                 spending, last 6 months
               </p>
               <div className="chart-bars">
-                <div className="chart-bar-wrap">
-                  <div className="chart-bar" style={{ height: "55%" }}></div>
-                  <span className="chart-label">apr</span>
-                </div>
-                <div className="chart-bar-wrap">
-                  <div className="chart-bar" style={{ height: "70%" }}></div>
-                  <span className="chart-label">may</span>
-                </div>
-                <div className="chart-bar-wrap">
-                  <div className="chart-bar" style={{ height: "45%" }}></div>
-                  <span className="chart-label">jun</span>
-                </div>
-                <div className="chart-bar-wrap">
-                  <div className="chart-bar" style={{ height: "80%" }}></div>
-                  <span className="chart-label">jul</span>
-                </div>
-                <div className="chart-bar-wrap">
-                  <div className="chart-bar" style={{ height: "60%" }}></div>
-                  <span className="chart-label">aug</span>
-                </div>
-                <div className="chart-bar-wrap">
-                  <div
-                    className="chart-bar this-month"
-                    style={{ height: "68%" }}
-                  ></div>
-                  <span className="chart-label">sep</span>
-                </div>
+                <ChartContainer
+                  config={chartConfig}
+                  className="max-h-[175px] w-full"
+                >
+                  <BarChart accessibilityLayer data={chartData}>
+                    <CartesianGrid vertical={false} />
+                    <XAxis
+                      dataKey="month"
+                      tickLine={false}
+                      tickMargin={10}
+                      axisLine={false}
+                      tickFormatter={(value) => formatMonth(String(value))}
+                    />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <ChartLegend content={<ChartLegendContent />} />
+                    <Bar
+                      dataKey="expenses"
+                      fill="var(--color-expenses)"
+                      radius={4}
+                    />
+                    <Bar
+                      dataKey="incomes"
+                      fill="var(--color-incomes)"
+                      radius={4}
+                    />
+                  </BarChart>
+                </ChartContainer>
               </div>
             </div>
 

@@ -227,6 +227,36 @@ app.MapDelete("/deleteUser", async (
     return Results.NoContent();
 }).RequireAuthorization();
 
+app.MapGet("/chart", async (
+    HttpContext http,
+    UserManager<User> userManager,
+    AppDbContext db) =>
+{
+    var user = await userManager.GetUserAsync(http.User);
+    if (user is null) return Results.Unauthorized();
+    
+    var entries = await db.Entries
+        .Where(e => e.UserId == user.Id)
+        .ToListAsync();
+
+    var chartData = entries
+        .GroupBy(e => new { e.Date.Year, e.Date.Month })
+        .OrderBy(g => g.Key.Year)
+        .ThenBy(g => g.Key.Month)
+        .Select(g => new
+        {
+            month = $"{g.Key.Year}-{g.Key.Month:D2}",
+            expenses = g
+                .Where(e => e.Type == EntryType.Expense)
+                .Sum(e => e.Amount),
+            incomes = g
+                .Where(e => e.Type == EntryType.Income)
+                .Sum(e => e.Amount)
+        });
+
+    return Results.Ok(chartData);
+}).RequireAuthorization();
+
 
 app.Run();
 
