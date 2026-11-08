@@ -257,6 +257,32 @@ app.MapGet("/chart", async (
     return Results.Ok(chartData);
 }).RequireAuthorization();
 
+app.MapGet("/stat", async (HttpContext http,
+    UserManager<User> userManager,
+    AppDbContext db) =>
+{
+    var user = await userManager.GetUserAsync(http.User);
+    if (user is null) return Results.Unauthorized();
+    
+    var entries = await db.Entries
+        .Where(e => e.UserId == user.Id)
+        .ToListAsync();
+    var statData = await db.Entries
+        .Where(e => e.UserId == user.Id && e.Type == EntryType.Expense)
+        .GroupBy(e => new { e.CategoryId, CategoryName = e.Category!.Name })
+        .Select(g => new
+        {
+            categoryId = g.Key.CategoryId,
+            categoryName = g.Key.CategoryName,
+            amountSpent = g.Sum(e => e.Amount)
+        })
+        .OrderByDescending(x => x.amountSpent)
+        .ToListAsync();
+
+    return Results.Ok(statData);
+
+}).RequireAuthorization();
+
 
 app.Run();
 

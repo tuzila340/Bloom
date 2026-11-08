@@ -4,7 +4,7 @@ import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
 import { ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { ChartLegend, ChartLegendContent } from "@/components/ui/chart";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 const chartConfig = {
@@ -24,6 +24,12 @@ type ChartData = {
   incomes: number;
 };
 
+type StatData = {
+  categoryId: number;
+  categoryName: string;
+  amountSpent: number;
+};
+
 function formatMonth(month: string) {
   // The API returns YYYY-MM; use a fixed day to avoid timezone shifts.
   const date = new Date(`${month}-01T00:00:00`);
@@ -34,24 +40,32 @@ function formatMonth(month: string) {
 
 function StatisticsPage() {
   const [chartData, setChartData] = useState<ChartData[]>([]);
+  const [statData, setStatData] = useState<StatData[]>([]);
 
   useEffect(() => {
-    const fetchChartData = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get<ChartData[]>(
-          "http://localhost:5277/chart",
-          { withCredentials: true },
-        );
+        const [chartResponse, statResponse] = await Promise.all([
+          axios.get<ChartData[]>("http://localhost:5277/chart", {
+            withCredentials: true,
+          }),
+          axios.get<StatData[]>("http://localhost:5277/stat", {
+            withCredentials: true,
+          }),
+        ]);
 
-        setChartData(response.data);
+        setChartData(chartResponse.data);
+        setStatData(statResponse.data);
       } catch (error) {
-        console.error("Error fetching chart data:", error);
+        console.error("Error fetching statistics data:", error);
         setChartData([]);
+        setStatData([]);
       }
     };
 
-    fetchChartData();
+    void fetchData();
   }, []);
+
   return (
     <>
       <Sidebar />
@@ -109,65 +123,35 @@ function StatisticsPage() {
                 by category
               </p>
               <div className="category-list">
-                <div className="category-row">
-                  <span
-                    className="cat-dot"
-                    style={{ background: "var(--sage-deep)" }}
-                  ></span>
-                  <span className="cat-name">groceries</span>
-                  <span className="cat-amount">$310</span>
-                </div>
-                <div className="category-row">
-                  <span
-                    className="cat-dot"
-                    style={{ background: "var(--amber)" }}
-                  ></span>
-                  <span className="cat-name">dining out</span>
-                  <span className="cat-amount">$180</span>
-                </div>
-                <div className="category-row">
-                  <span
-                    className="cat-dot"
-                    style={{ background: "var(--blue)" }}
-                  ></span>
-                  <span className="cat-name">transport</span>
-                  <span className="cat-amount">$95</span>
-                </div>
-                <div className="category-row">
-                  <span
-                    className="cat-dot"
-                    style={{ background: "var(--purple)" }}
-                  ></span>
-                  <span className="cat-name">subscriptions</span>
-                  <span className="cat-amount">$42</span>
-                </div>
-                <div className="category-row">
-                  <span
-                    className="cat-dot"
-                    style={{ background: "var(--coral)" }}
-                  ></span>
-                  <span className="cat-name">other</span>
-                  <span className="cat-amount">$65</span>
-                </div>
+                {statData.map((category) => (
+                  <div className="category-row" key={category.categoryId}>
+                    <span
+                      className="cat-dot"
+                      style={{ background: "var(--sage-pale)" }}
+                    />
+                    <span className="cat-name">{category.categoryName}</span>
+                    <span className="cat-amount">{category.amountSpent} $</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="stat-grid" style={{ marginTop: 20 }}>
-            <div className="card">
-              <p className="label">avg. daily spend</p>
-              <p className="value">$55.30</p>
-            </div>
-            <div className="card">
-              <p className="label">vs. last month</p>
-              <p className="value" style={{ color: "var(--sage-deep)" }}>
-                -12%
-              </p>
-            </div>
-            <div className="card">
-              <p className="label">top category</p>
-              <p className="value">groceries</p>
-            </div>
+        <div className="stat-grid" style={{ marginTop: 20 }}>
+          <div className="card">
+            <p className="label">avg. daily spend</p>
+            <p className="value">$55.30</p>
+          </div>
+          <div className="card">
+            <p className="label">vs. last month</p>
+            <p className="value" style={{ color: "var(--sage-deep)" }}>
+              -12%
+            </p>
+          </div>
+          <div className="card">
+            <p className="label">top category</p>
+            <p className="value">groceries</p>
           </div>
         </div>
       </div>
