@@ -283,6 +283,30 @@ app.MapGet("/stat", async (HttpContext http,
 
 }).RequireAuthorization();
 
+app.MapGet("/piechart", async (
+        HttpContext http,
+        UserManager<User> userManager,
+        AppDbContext db) =>
+    {
+        var user = await userManager.GetUserAsync(http.User);
+        if (user is null) return Results.Unauthorized();
+        
+        var piedata = await  db.Entries
+            .Where(e => e.UserId == user.Id)
+            .GroupBy(e => new { e.CategoryId, CategoryName = e.Category!.Name })
+            .Select(g => new
+            {
+                categoryId = g.Key.CategoryId,
+                categoryName = g.Key.CategoryName,
+                entryCount = g.Count()
+            })
+            .OrderByDescending(x => x.entryCount)
+            .ToListAsync();
+
+        return Results.Ok(piedata);
+    }
+).RequireAuthorization();
+
 
 app.Run();
 

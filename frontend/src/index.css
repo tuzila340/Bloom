@@ -13,10 +13,12 @@
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 
+  --sage: #27500a;
   --sage-deep: #639922;
   --sage-light: #97c459;
   --sage-pale: #c0dd97;
   --sage-bg: #eaf3de;
+  --sage-accent: #e1efc9;
   --coral: #d85a30;
   --coral-bg: #faece7;
   --amber: #ba7517;
@@ -134,7 +136,7 @@ a {
 
 @theme inline {
   --font-heading: var(--font-sans);
-  --font-sans: 'Geist Variable', sans-serif;
+  --font-sans: "Geist Variable", sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
