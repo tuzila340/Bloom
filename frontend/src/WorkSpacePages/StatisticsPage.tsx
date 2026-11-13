@@ -4,6 +4,7 @@ import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
 import { ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { ChartLegend, ChartLegendContent } from "@/components/ui/chart";
+import { Cell, Pie, PieChart } from "recharts";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -18,6 +19,25 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
+const chartConfig1 = {
+  entryCount: {
+    label: "Entry Count",
+  },
+  categoryName: {
+    label: "Category",
+  },
+} satisfies ChartConfig;
+
+const pieChartColors = [
+  "var(--sage-accent)",
+  "var(--sage-deep)",
+  "var(--sage-light)",
+  "var(--sage-pale)",
+  "var(--sage-bg)",
+  "var(--sage)",
+  "var(--coral)",
+] as const;
+
 type ChartData = {
   month: string;
   expenses: number;
@@ -28,6 +48,12 @@ type StatData = {
   categoryId: number;
   categoryName: string;
   amountSpent: number;
+};
+
+type PieChartData = {
+  categoryId: number;
+  categoryName: string;
+  entryCount: number;
 };
 
 function formatMonth(month: string) {
@@ -41,25 +67,31 @@ function formatMonth(month: string) {
 function StatisticsPage() {
   const [chartData, setChartData] = useState<ChartData[]>([]);
   const [statData, setStatData] = useState<StatData[]>([]);
-
+  const [pieChartData, setPieChartData] = useState<PieChartData[]>([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [chartResponse, statResponse] = await Promise.all([
-          axios.get<ChartData[]>("http://localhost:5277/chart", {
-            withCredentials: true,
-          }),
-          axios.get<StatData[]>("http://localhost:5277/stat", {
-            withCredentials: true,
-          }),
-        ]);
+        const [chartResponse, statResponse, pieChartResponse] =
+          await Promise.all([
+            axios.get<ChartData[]>("http://localhost:5277/chart", {
+              withCredentials: true,
+            }),
+            axios.get<StatData[]>("http://localhost:5277/stat", {
+              withCredentials: true,
+            }),
+            axios.get<PieChartData[]>("http://localhost:5277/piechart", {
+              withCredentials: true,
+            }),
+          ]);
 
         setChartData(chartResponse.data);
         setStatData(statResponse.data);
+        setPieChartData(pieChartResponse.data);
       } catch (error) {
         console.error("Error fetching statistics data:", error);
         setChartData([]);
         setStatData([]);
+        setPieChartData([]);
       }
     };
 
@@ -140,8 +172,34 @@ function StatisticsPage() {
 
         <div className="stat-grid" style={{ marginTop: 20 }}>
           <div className="card">
-            <p className="label">avg. daily spend</p>
-            <p className="value">$55.30</p>
+            <p className="label">spending distribution</p>
+            <ChartContainer
+              config={chartConfig1}
+              className="mx-auto aspect-square max-h-[250px]"
+            >
+              <PieChart>
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent hideLabel />}
+                />
+                <Pie
+                  data={pieChartData}
+                  dataKey="entryCount"
+                  nameKey="categoryName"
+                  innerRadius={60}
+                  outerRadius={90}
+                  paddingAngle={2}
+                  isAnimationActive={false}
+                >
+                  {pieChartData.map((category, index) => (
+                    <Cell
+                      key={category.categoryId}
+                      fill={pieChartColors[index % pieChartColors.length]}
+                    />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ChartContainer>
           </div>
           <div className="card">
             <p className="label">vs. last month</p>
