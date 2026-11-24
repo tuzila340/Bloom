@@ -1,6 +1,6 @@
 import Sidebar from "../Sidebar";
 import "../Workspace.css";
-import AddEntryDialog from "../AddEntryDialog";
+import AddEntryDialog from "../Dialogs/AddEntryDialog";
 import { useState, useEffect } from "react";
 import axios from "axios";
 

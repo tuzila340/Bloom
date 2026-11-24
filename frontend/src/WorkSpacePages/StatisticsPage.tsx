@@ -201,16 +201,6 @@ function StatisticsPage() {
               </PieChart>
             </ChartContainer>
           </div>
-          <div className="card">
-            <p className="label">vs. last month</p>
-            <p className="value" style={{ color: "var(--sage-deep)" }}>
-              -12%
-            </p>
-          </div>
-          <div className="card">
-            <p className="label">top category</p>
-            <p className="value">groceries</p>
-          </div>
         </div>
       </div>
     </>

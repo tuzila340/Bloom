@@ -2,7 +2,7 @@ import Sidebar from "../Sidebar";
 import "../Workspace.css";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import DeleteDialog from "../DeleteDialog";
+import DeleteDialog from "../Dialogs/DeleteDialog";
 
 type Profile = {
   username: string;
